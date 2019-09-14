@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.9.0">
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+
+    
+
+    
+        <meta name="description" content="1使用hexo写博客1.1. hexo简介&amp;emsp;&amp;emsp; Hexo是一个简单、快速、强大的基于 Github Pages 的博客发布工具，支持Markdown格式，有众多优秀插件和主题。
+&amp;emsp;&amp;emsp;官网： http://hexo.iogithub: https://github.com/hexojs/hexo
+1.2. 原理&amp;emsp;&amp;emsp;由于github pages存放的都是静态文件，博客存放的不只是文章内容，还有文章列表、分类、标签、翻页等动态内容，假如每次写完一篇文章都要手动更新博文目录和相关链接信息，相信谁都会疯掉，所以hexo所做的就是将这些md文件都放在本地，每次写完文章后调用写好的命令来批量完成相关页面的生成，然后再将有改动的页面提交到github。
+1.3. 注意事项&amp;emsp;&amp;emsp;安装之前先来说几个注意事项：
+1.很多命令既可以用Windows的cmd来完成，也可以使用git bash来完成，但是部分命令会有一些问题，为避免不必要的问题，建议全部使用git bash来执行；2.hexo不同版本差别比较大，网上很多文章的配置信息都是基于2.x的，所以注意不要被误导；3.hexo有2种_config.yml文件，一个是根目录下的全局的_config.yml，一个是各个theme下的；
+1.4. 安装npm install -g hexo1.5. 初始化在电脑的某个地方新建一个名为hexo的文件夹（名字可以随便取），比如我的是F:\Workspaces\hexo，由于这个文件夹将来就作为你存放代码的地方，所以最好不要随便放。
+cd /f/Workspaces/hexo/hexo inithexo会自动下载一些文件到这个目录，包括node_modules，目录结构如下图：
+hexo g # 生成hexo s # 启动服务&amp;emsp;&amp;emsp;执行以上命令之后，hexo就会在public文件夹生成相关html文件，这些文件将来都是要提交到github去的：
+
+&amp;emsp;&amp;emsp; * hexo s是开启本地预览服务，打开浏览器访问 http://localhost:4000 即可看到内容，很多人会碰到浏览器一直在转圈但是就是加载不出来的问题，一般情况下是因为端口占用的缘故，因为4000这个端口太常见了，解决端口冲突问题请参考这篇文章：
+http://blog.liuxianan.com/windows-port-bind.html
+&amp;emsp;&amp;emsp;第一次初始化的时候hexo已经帮我们写了一篇名为 Hello World 的文章，默认的主题比较丑，打开时就是这个样子：
+1.6. 修改主题既然默认主题很丑，那我们别的不做，首先来替换一个好看点的主题。这是 官方主题。
+个人比较喜欢的2个主题：hexo-theme-jekyll 和 hexo-theme-yilia。
+首先下载这个主题：
+$ cd /f/Workspaces/hexo/$ git clone https://github.com/litten/hexo-theme-yilia.git themes/yilia下载后的主题都在这里：
+
+&amp;emsp;&amp;emsp;修改_config.yml中的theme: landscape改为theme: yilia，然后重新执行hexo g来重新生成。
+&amp;emsp;&amp;emsp;如果出现一些莫名其妙的问题，可以先执行hexo clean来清理一下public的内容，然后再来重新生成和发布。
+1.7. 上传之前&amp;emsp;&amp;emsp;在上传代码到github之前，一定要记得先把你以前所有代码下载下来（虽然github有版本管理，但备份一下总是好的），因为从hexo提交代码时会把你以前的所有代码都删掉。
+1.8. 上传到github&amp;emsp;&amp;emsp;如果你一切都配置好了，发布上传很容易，一句hexo d就搞定，当然关键还是你要把所有东西配置好。
+&amp;emsp;&amp;emsp;首先，ssh key肯定要配置好。
+&amp;emsp;&amp;emsp;其次，配置_config.yml中有关deploy的部分：
+&amp;emsp;&amp;emsp;正确写法：
+deploy:  type: git  repository: git@github.com:liuxianan/liuxianan.github.io.git  branch: master&amp;emsp;&amp;emsp;错误写法：
+deploy:  type: github  repository: https://github.com/liuxianan/liuxianan.github.io.git  branch: master后面一种写法是hexo2.x的写法，现在已经不行了，无论是哪种写法，此时直接执行hexo d的话一般会报如下错误：
+Deployer not found: github 或者 Deployer not found: git原因是还需要安装一个插件：
+npm install hexo-deployer-git –save&amp;emsp;&amp;emsp;其它命令不确定，部署这个命令一定要用git bash，否则会提示Permission denied (publickey).
+&amp;emsp;&amp;emsp;打开你的git bash，输入hexo d就会将本次有改动的代码全部提交，没有改动的不会：
+1.9. 保留CNAME、README.md等文件&amp;emsp;&amp;emsp;提交之后网页上一看，发现以前其它代码都没了，此时不要慌，一些非md文件可以把他们放到source文件夹下，这里的所有文件都会原样复制（除了md文件）到public目录的：
+&amp;emsp;&amp;emsp;由于hexo默认会把所有md文件都转换成html，包括README.md，所有需要每次生成之后、上传之前，手动将README.md复制到public目录，并删除README.html。
+1.10. 常用hexo命令常见命令hexo new “postName” #新建文章hexo new page “pageName” #新建页面hexo generate #生成静态页面至public目录hexo server #开启预览访问端口（默认端口4000，’ctrl + c’关闭server）hexo deploy #部署到GitHubhexo help  # 查看帮助hexo version  #查看Hexo的版本缩写：
+hexo n == hexo newhexo g == hexo generatehexo s == hexo serverhexo d == hexo deploy组合命令：
+hexo s -g #生成并本地预览hexo d -g #生成并上传1.11. _config.yml&amp;emsp;&amp;emsp;这里面都是一些全局配置，每个参数的意思都比较简单明了，所以就不作详细介绍了。
+需要特别注意的地方是，冒号后面必须有一个空格，否则可能会出问题。
+1.12. 写博客&amp;emsp;&amp;emsp;定位到我们的hexo根目录，执行命令：
+hexo new ‘my-first-blog’hexo会帮我们在_posts下生成相关md文件：
+
+我们只需要打开这个文件就可以开始写博客了，默认生成如下内容：
+
+当然你也可以直接自己新建md文件，用这个命令的好处是帮我们自动生成了时间。
+一般完整格式如下：
+
+title: postName #文章页面上的显示名称，一般是中文date: 2013-12-02 15:30:16 #文章生成时间，一般不改，当然也可以任意修改categories: 默认分类 #分类tags: [tag1,tag2,tag3] #文章标签，可空，多标签请用格式，注意:后面有个空格description: 附加一段文章摘要，字数最好在140字以内，会出现在meta的description里面
+以下是正文那么hexo new page ‘postName’命令和hexo new ‘postName’有什么区别呢？
+hexo new page “my-second-blog”生成如下：
+
+最终部署时生成：hexo\public\my-second-blog\index.html，但是它不会作为文章出现在博文目录。
+2.1. 写博客工具那么用什么工具写博客呢？这个我还没去找，以前自己使用editor.md简单弄了个，大家有好用的hexo写博客工具可以推荐个。
+2.2. 如何让博文列表不显示全部内容默认情况下，生成的博文目录会显示全部的文章内容，如何设置文章摘要的长度呢？
+答案是在合适的位置加上">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="Mr feng">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="使用hexo搭建免费个人博客">
+    
+
+    <!--Open Graph Description-->
+    
+        <meta property="og:description" content="1使用hexo写博客1.1. hexo简介&amp;emsp;&amp;emsp; Hexo是一个简单、快速、强大的基于 Github Pages 的博客发布工具，支持Markdown格式，有众多优秀插件和主题。
+&amp;emsp;&amp;emsp;官网： http://hexo.iogithub: https://github.com/hexojs/hexo
+1.2. 原理&amp;emsp;&amp;emsp;由于github pages存放的都是静态文件，博客存放的不只是文章内容，还有文章列表、分类、标签、翻页等动态内容，假如每次写完一篇文章都要手动更新博文目录和相关链接信息，相信谁都会疯掉，所以hexo所做的就是将这些md文件都放在本地，每次写完文章后调用写好的命令来批量完成相关页面的生成，然后再将有改动的页面提交到github。
+1.3. 注意事项&amp;emsp;&amp;emsp;安装之前先来说几个注意事项：
+1.很多命令既可以用Windows的cmd来完成，也可以使用git bash来完成，但是部分命令会有一些问题，为避免不必要的问题，建议全部使用git bash来执行；2.hexo不同版本差别比较大，网上很多文章的配置信息都是基于2.x的，所以注意不要被误导；3.hexo有2种_config.yml文件，一个是根目录下的全局的_config.yml，一个是各个theme下的；
+1.4. 安装npm install -g hexo1.5. 初始化在电脑的某个地方新建一个名为hexo的文件夹（名字可以随便取），比如我的是F:\Workspaces\hexo，由于这个文件夹将来就作为你存放代码的地方，所以最好不要随便放。
+cd /f/Workspaces/hexo/hexo inithexo会自动下载一些文件到这个目录，包括node_modules，目录结构如下图：
+hexo g # 生成hexo s # 启动服务&amp;emsp;&amp;emsp;执行以上命令之后，hexo就会在public文件夹生成相关html文件，这些文件将来都是要提交到github去的：
+
+&amp;emsp;&amp;emsp; * hexo s是开启本地预览服务，打开浏览器访问 http://localhost:4000 即可看到内容，很多人会碰到浏览器一直在转圈但是就是加载不出来的问题，一般情况下是因为端口占用的缘故，因为4000这个端口太常见了，解决端口冲突问题请参考这篇文章：
+http://blog.liuxianan.com/windows-port-bind.html
+&amp;emsp;&amp;emsp;第一次初始化的时候hexo已经帮我们写了一篇名为 Hello World 的文章，默认的主题比较丑，打开时就是这个样子：
+1.6. 修改主题既然默认主题很丑，那我们别的不做，首先来替换一个好看点的主题。这是 官方主题。
+个人比较喜欢的2个主题：hexo-theme-jekyll 和 hexo-theme-yilia。
+首先下载这个主题：
+$ cd /f/Workspaces/hexo/$ git clone https://github.com/litten/hexo-theme-yilia.git themes/yilia下载后的主题都在这里：
+
+&amp;emsp;&amp;emsp;修改_config.yml中的theme: landscape改为theme: yilia，然后重新执行hexo g来重新生成。
+&amp;emsp;&amp;emsp;如果出现一些莫名其妙的问题，可以先执行hexo clean来清理一下public的内容，然后再来重新生成和发布。
+1.7. 上传之前&amp;emsp;&amp;emsp;在上传代码到github之前，一定要记得先把你以前所有代码下载下来（虽然github有版本管理，但备份一下总是好的），因为从hexo提交代码时会把你以前的所有代码都删掉。
+1.8. 上传到github&amp;emsp;&amp;emsp;如果你一切都配置好了，发布上传很容易，一句hexo d就搞定，当然关键还是你要把所有东西配置好。
+&amp;emsp;&amp;emsp;首先，ssh key肯定要配置好。
+&amp;emsp;&amp;emsp;其次，配置_config.yml中有关deploy的部分：
+&amp;emsp;&amp;emsp;正确写法：
+deploy:  type: git  repository: git@github.com:liuxianan/liuxianan.github.io.git  branch: master&amp;emsp;&amp;emsp;错误写法：
+deploy:  type: github  repository: https://github.com/liuxianan/liuxianan.github.io.git  branch: master后面一种写法是hexo2.x的写法，现在已经不行了，无论是哪种写法，此时直接执行hexo d的话一般会报如下错误：
+Deployer not found: github 或者 Deployer not found: git原因是还需要安装一个插件：
+npm install hexo-deployer-git –save&amp;emsp;&amp;emsp;其它命令不确定，部署这个命令一定要用git bash，否则会提示Permission denied (publickey).
+&amp;emsp;&amp;emsp;打开你的git bash，输入hexo d就会将本次有改动的代码全部提交，没有改动的不会：
+1.9. 保留CNAME、README.md等文件&amp;emsp;&amp;emsp;提交之后网页上一看，发现以前其它代码都没了，此时不要慌，一些非md文件可以把他们放到source文件夹下，这里的所有文件都会原样复制（除了md文件）到public目录的：
+&amp;emsp;&amp;emsp;由于hexo默认会把所有md文件都转换成html，包括README.md，所有需要每次生成之后、上传之前，手动将README.md复制到public目录，并删除README.html。
+1.10. 常用hexo命令常见命令hexo new “postName” #新建文章hexo new page “pageName” #新建页面hexo generate #生成静态页面至public目录hexo server #开启预览访问端口（默认端口4000，’ctrl + c’关闭server）hexo deploy #部署到GitHubhexo help  # 查看帮助hexo version  #查看Hexo的版本缩写：
+hexo n == hexo newhexo g == hexo generatehexo s == hexo serverhexo d == hexo deploy组合命令：
+hexo s -g #生成并本地预览hexo d -g #生成并上传1.11. _config.yml&amp;emsp;&amp;emsp;这里面都是一些全局配置，每个参数的意思都比较简单明了，所以就不作详细介绍了。
+需要特别注意的地方是，冒号后面必须有一个空格，否则可能会出问题。
+1.12. 写博客&amp;emsp;&amp;emsp;定位到我们的hexo根目录，执行命令：
+hexo new ‘my-first-blog’hexo会帮我们在_posts下生成相关md文件：
+
+我们只需要打开这个文件就可以开始写博客了，默认生成如下内容：
+
+当然你也可以直接自己新建md文件，用这个命令的好处是帮我们自动生成了时间。
+一般完整格式如下：
+
+title: postName #文章页面上的显示名称，一般是中文date: 2013-12-02 15:30:16 #文章生成时间，一般不改，当然也可以任意修改categories: 默认分类 #分类tags: [tag1,tag2,tag3] #文章标签，可空，多标签请用格式，注意:后面有个空格description: 附加一段文章摘要，字数最好在140字以内，会出现在meta的description里面
+以下是正文那么hexo new page ‘postName’命令和hexo new ‘postName’有什么区别呢？
+hexo new page “my-second-blog”生成如下：
+
+最终部署时生成：hexo\public\my-second-blog\index.html，但是它不会作为文章出现在博文目录。
+2.1. 写博客工具那么用什么工具写博客呢？这个我还没去找，以前自己使用editor.md简单弄了个，大家有好用的hexo写博客工具可以推荐个。
+2.2. 如何让博文列表不显示全部内容默认情况下，生成的博文目录会显示全部的文章内容，如何设置文章摘要的长度呢？
+答案是在合适的位置加上">
+    
+
+    <!--Open Graph Site Name-->
+        <meta property="og:site_name" content="冯的个人微博">
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article">
+    
+
+    <!--Page Cover-->
+    
+    
+        <meta property="og:image" content="http://yoursite.comhttp://www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg">
+    
+
+        <meta name="twitter:card" content="summary_large_image">
+
+    
+
+    
+        <meta name="twitter:image" content="http://yoursite.comhttp://www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg">
+    
+
+    <!-- Title -->
+    
+    <title>使用hexo搭建免费个人博客 - 冯的个人微博</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet">
+
+    <!-- Google Analytics -->
+    
+
+
+    <!-- favicon -->
+    
+
+</head>
+
+
+<body>
+
+    <!-- Menu -->
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Configurable Title</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                
+                    <li>
+                        <a href="/">
+                            
+                                Home
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/archives">
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/tags">
+                            
+                                Tags
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="/categories">
+                            
+                                Categories
+                            
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a href="https://github.com/klugjo/hexo-theme-clean-blog">
+                            
+                                <i class="fa fa-github fa-stack-2x"></i>
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<!-- Set your background image for this header in your post front-matter: cover -->
+
+<header class="intro-header" style="background-image: url('http://www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>使用hexo搭建免费个人博客</h1>
+                    
+                    <span class="meta">
+                        <!-- Date and Author -->
+                        
+                        
+                            2019-09-14
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Tags and categories -->
+           
+
+            <!-- Gallery -->
+            
+
+            <!-- Post Main Content -->
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <h2 id="1使用hexo写博客"><a href="#1使用hexo写博客" class="headerlink" title="1使用hexo写博客"></a>1使用hexo写博客</h2><p>1.1. hexo简介<br>&emsp;&emsp; Hexo是一个简单、快速、强大的基于 Github Pages 的博客发布工具，支持Markdown格式，有众多优秀插件和主题。</p>
+<p>&emsp;&emsp;官网： <a href="http://hexo.io" target="_blank" rel="noopener">http://hexo.io</a><br>github: <a href="https://github.com/hexojs/hexo" target="_blank" rel="noopener">https://github.com/hexojs/hexo</a></p>
+<h3 id="1-2-原理"><a href="#1-2-原理" class="headerlink" title="1.2. 原理"></a>1.2. 原理</h3><p>&emsp;&emsp;由于github pages存放的都是静态文件，博客存放的不只是文章内容，还有文章列表、分类、标签、翻页等动态内容，假如每次写完一篇文章都要手动更新博文目录和相关链接信息，相信谁都会疯掉，所以hexo所做的就是将这些md文件都放在本地，每次写完文章后调用写好的命令来批量完成相关页面的生成，然后再将有改动的页面提交到github。</p>
+<h3 id="1-3-注意事项"><a href="#1-3-注意事项" class="headerlink" title="1.3. 注意事项"></a>1.3. 注意事项</h3><p>&emsp;&emsp;安装之前先来说几个注意事项：</p>
+<p>1.很多命令既可以用Windows的cmd来完成，也可以使用git bash来完成，但是部分命令会有一些问题，为避免不必要的问题，建议全部使用git bash来执行；<br>2.hexo不同版本差别比较大，网上很多文章的配置信息都是基于2.x的，所以注意不要被误导；<br>3.hexo有2种_config.yml文件，一个是根目录下的全局的_config.yml，一个是各个theme下的；</p>
+<h3 id="1-4-安装"><a href="#1-4-安装" class="headerlink" title="1.4. 安装"></a>1.4. 安装</h3><h4 id="npm-install-g-hexo"><a href="#npm-install-g-hexo" class="headerlink" title="npm install -g hexo"></a>npm install -g hexo</h4><h3 id="1-5-初始化"><a href="#1-5-初始化" class="headerlink" title="1.5. 初始化"></a>1.5. 初始化</h3><p>在电脑的某个地方新建一个名为hexo的文件夹（名字可以随便取），比如我的是F:\Workspaces\hexo，由于这个文件夹将来就作为你存放代码的地方，所以最好不要随便放。</p>
+<h4 id="cd-f-Workspaces-hexo"><a href="#cd-f-Workspaces-hexo" class="headerlink" title="cd /f/Workspaces/hexo/"></a>cd /f/Workspaces/hexo/</h4><h4 id="hexo-init"><a href="#hexo-init" class="headerlink" title="hexo init"></a>hexo init</h4><p>hexo会自动下载一些文件到这个目录，包括node_modules，目录结构如下图：<br><img src="http://image.liuxianan.com/201608/20160818_115922_773_1148.png" alt></p>
+<h4 id="hexo-g-生成"><a href="#hexo-g-生成" class="headerlink" title="hexo g # 生成"></a>hexo g # 生成</h4><h4 id="hexo-s-启动服务"><a href="#hexo-s-启动服务" class="headerlink" title="hexo s # 启动服务"></a>hexo s # 启动服务</h4><p>&emsp;&emsp;执行以上命令之后，hexo就会在public文件夹生成相关html文件，这些文件将来都是要提交到github去的：</p>
+<p><img src="http://image.liuxianan.com/201608/20160818_120700_028_2426.png" alt></p>
+<p>&emsp;&emsp; * hexo s是开启本地预览服务，打开浏览器访问 <a href="http://localhost:4000" target="_blank" rel="noopener">http://localhost:4000</a> 即可看到内容，很多人会碰到浏览器一直在转圈但是就是加载不出来的问题，一般情况下是因为端口占用的缘故，因为4000这个端口太常见了，解决端口冲突问题请参考这篇文章：</p>
+<p><a href="http://blog.liuxianan.com/windows-port-bind.html" target="_blank" rel="noopener">http://blog.liuxianan.com/windows-port-bind.html</a></p>
+<p>&emsp;&emsp;第一次初始化的时候hexo已经帮我们写了一篇名为 Hello World 的文章，默认的主题比较丑，打开时就是这个样子：<br><img src="http://image.liuxianan.com/201608/20160818_132443_202_6848.png" alt></p>
+<h3 id="1-6-修改主题"><a href="#1-6-修改主题" class="headerlink" title="1.6. 修改主题"></a>1.6. 修改主题</h3><p>既然默认主题很丑，那我们别的不做，首先来替换一个好看点的主题。这是 官方主题。</p>
+<p>个人比较喜欢的2个主题：hexo-theme-jekyll 和 hexo-theme-yilia。</p>
+<p>首先下载这个主题：</p>
+<h4 id="cd-f-Workspaces-hexo-1"><a href="#cd-f-Workspaces-hexo-1" class="headerlink" title="$ cd /f/Workspaces/hexo/"></a>$ cd /f/Workspaces/hexo/</h4><h4 id="git-clone-https-github-com-litten-hexo-theme-yilia-git-themes-yilia"><a href="#git-clone-https-github-com-litten-hexo-theme-yilia-git-themes-yilia" class="headerlink" title="$ git clone https://github.com/litten/hexo-theme-yilia.git themes/yilia"></a>$ git clone <a href="https://github.com/litten/hexo-theme-yilia.git" target="_blank" rel="noopener">https://github.com/litten/hexo-theme-yilia.git</a> themes/yilia</h4><p>下载后的主题都在这里：</p>
+<p><img src="http://image.liuxianan.com/201608/20160818_134500_245_0912.png" alt></p>
+<p>&emsp;&emsp;修改_config.yml中的theme: landscape改为theme: yilia，然后重新执行hexo g来重新生成。</p>
+<p>&emsp;&emsp;如果出现一些莫名其妙的问题，可以先执行hexo clean来清理一下public的内容，然后再来重新生成和发布。</p>
+<h3 id="1-7-上传之前"><a href="#1-7-上传之前" class="headerlink" title="1.7. 上传之前"></a>1.7. 上传之前</h3><p>&emsp;&emsp;在上传代码到github之前，一定要记得先把你以前所有代码下载下来（虽然github有版本管理，但备份一下总是好的），因为从hexo提交代码时会把你以前的所有代码都删掉。</p>
+<h3 id="1-8-上传到github"><a href="#1-8-上传到github" class="headerlink" title="1.8. 上传到github"></a>1.8. 上传到github</h3><p>&emsp;&emsp;如果你一切都配置好了，发布上传很容易，一句hexo d就搞定，当然关键还是你要把所有东西配置好。</p>
+<p>&emsp;&emsp;首先，ssh key肯定要配置好。</p>
+<p>&emsp;&emsp;其次，配置_config.yml中有关deploy的部分：</p>
+<p>&emsp;&emsp;正确写法：</p>
+<p>deploy:<br>  type: git<br>  repository: <a href="mailto:git@github.com" target="_blank" rel="noopener">git@github.com</a>:liuxianan/liuxianan.github.io.git<br>  branch: master<br>&emsp;&emsp;错误写法：</p>
+<p>deploy:<br>  type: github<br>  repository: <a href="https://github.com/liuxianan/liuxianan.github.io.git" target="_blank" rel="noopener">https://github.com/liuxianan/liuxianan.github.io.git</a><br>  branch: master<br>后面一种写法是hexo2.x的写法，现在已经不行了，无论是哪种写法，此时直接执行hexo d的话一般会报如下错误：</p>
+<p>Deployer not found: github 或者 Deployer not found: git<br>原因是还需要安装一个插件：</p>
+<h4 id="npm-install-hexo-deployer-git-–save"><a href="#npm-install-hexo-deployer-git-–save" class="headerlink" title="npm install hexo-deployer-git –save"></a>npm install hexo-deployer-git –save</h4><p>&emsp;&emsp;其它命令不确定，部署这个命令一定要用git bash，否则会提示Permission denied (publickey).</p>
+<p>&emsp;&emsp;打开你的git bash，输入hexo d就会将本次有改动的代码全部提交，没有改动的不会：<br><img src="http://image.liuxianan.com/201608/20160818_140441_769_5024.png" alt></p>
+<h3 id="1-9-保留CNAME、README-md等文件"><a href="#1-9-保留CNAME、README-md等文件" class="headerlink" title="1.9. 保留CNAME、README.md等文件"></a>1.9. 保留CNAME、README.md等文件</h3><p>&emsp;&emsp;提交之后网页上一看，发现以前其它代码都没了，此时不要慌，一些非md文件可以把他们放到source文件夹下，这里的所有文件都会原样复制（除了md文件）到public目录的：<br><img src="http://image.liuxianan.com/201608/20160818_141037_580_8035.png" alt></p>
+<p>&emsp;&emsp;由于hexo默认会把所有md文件都转换成html，包括README.md，所有需要每次生成之后、上传之前，手动将README.md复制到public目录，并删除README.html。</p>
+<h3 id="1-10-常用hexo命令"><a href="#1-10-常用hexo命令" class="headerlink" title="1.10. 常用hexo命令"></a>1.10. 常用hexo命令</h3><h3 id="常见命令"><a href="#常见命令" class="headerlink" title="常见命令"></a>常见命令</h3><h4 id="hexo-new-“postName”-新建文章"><a href="#hexo-new-“postName”-新建文章" class="headerlink" title="hexo new “postName” #新建文章"></a>hexo new “postName” #新建文章</h4><h4 id="hexo-new-page-“pageName”-新建页面"><a href="#hexo-new-page-“pageName”-新建页面" class="headerlink" title="hexo new page “pageName” #新建页面"></a>hexo new page “pageName” #新建页面</h4><h4 id="hexo-generate-生成静态页面至public目录"><a href="#hexo-generate-生成静态页面至public目录" class="headerlink" title="hexo generate #生成静态页面至public目录"></a>hexo generate #生成静态页面至public目录</h4><h4 id="hexo-server-开启预览访问端口（默认端口4000，’ctrl-c’关闭server）"><a href="#hexo-server-开启预览访问端口（默认端口4000，’ctrl-c’关闭server）" class="headerlink" title="hexo server #开启预览访问端口（默认端口4000，’ctrl + c’关闭server）"></a>hexo server #开启预览访问端口（默认端口4000，’ctrl + c’关闭server）</h4><h4 id="hexo-deploy-部署到GitHub"><a href="#hexo-deploy-部署到GitHub" class="headerlink" title="hexo deploy #部署到GitHub"></a>hexo deploy #部署到GitHub</h4><h4 id="hexo-help-查看帮助"><a href="#hexo-help-查看帮助" class="headerlink" title="hexo help  # 查看帮助"></a>hexo help  # 查看帮助</h4><h4 id="hexo-version-查看Hexo的版本"><a href="#hexo-version-查看Hexo的版本" class="headerlink" title="hexo version  #查看Hexo的版本"></a>hexo version  #查看Hexo的版本</h4><p>缩写：</p>
+<h4 id="hexo-n-hexo-new"><a href="#hexo-n-hexo-new" class="headerlink" title="hexo n == hexo new"></a>hexo n == hexo new</h4><h4 id="hexo-g-hexo-generate"><a href="#hexo-g-hexo-generate" class="headerlink" title="hexo g == hexo generate"></a>hexo g == hexo generate</h4><h4 id="hexo-s-hexo-server"><a href="#hexo-s-hexo-server" class="headerlink" title="hexo s == hexo server"></a>hexo s == hexo server</h4><h4 id="hexo-d-hexo-deploy"><a href="#hexo-d-hexo-deploy" class="headerlink" title="hexo d == hexo deploy"></a>hexo d == hexo deploy</h4><p>组合命令：</p>
+<h4 id="hexo-s-g-生成并本地预览"><a href="#hexo-s-g-生成并本地预览" class="headerlink" title="hexo s -g #生成并本地预览"></a>hexo s -g #生成并本地预览</h4><h4 id="hexo-d-g-生成并上传"><a href="#hexo-d-g-生成并上传" class="headerlink" title="hexo d -g #生成并上传"></a>hexo d -g #生成并上传</h4><h3 id="1-11-config-yml"><a href="#1-11-config-yml" class="headerlink" title="1.11. _config.yml"></a>1.11. _config.yml</h3><p>&emsp;&emsp;这里面都是一些全局配置，每个参数的意思都比较简单明了，所以就不作详细介绍了。</p>
+<p>需要特别注意的地方是，冒号后面必须有一个空格，否则可能会出问题。</p>
+<h3 id="1-12-写博客"><a href="#1-12-写博客" class="headerlink" title="1.12. 写博客"></a>1.12. 写博客</h3><p>&emsp;&emsp;定位到我们的hexo根目录，执行命令：</p>
+<h4 id="hexo-new-‘my-first-blog’"><a href="#hexo-new-‘my-first-blog’" class="headerlink" title="hexo new ‘my-first-blog’"></a>hexo new ‘my-first-blog’</h4><p>hexo会帮我们在_posts下生成相关md文件：</p>
+<p><img src="http://image.liuxianan.com/201608/20160823_183047_352_1475.png" alt></p>
+<p>我们只需要打开这个文件就可以开始写博客了，默认生成如下内容：</p>
+<p><img src="http://image.liuxianan.com/201608/20160823_183325_470_9306.png" alt></p>
+<p>当然你也可以直接自己新建md文件，用这个命令的好处是帮我们自动生成了时间。</p>
+<p>一般完整格式如下：</p>
+<hr>
+<h4 id="title-postName-文章页面上的显示名称，一般是中文"><a href="#title-postName-文章页面上的显示名称，一般是中文" class="headerlink" title="title: postName #文章页面上的显示名称，一般是中文"></a>title: postName #文章页面上的显示名称，一般是中文</h4><h4 id="date-2013-12-02-15-30-16-文章生成时间，一般不改，当然也可以任意修改"><a href="#date-2013-12-02-15-30-16-文章生成时间，一般不改，当然也可以任意修改" class="headerlink" title="date: 2013-12-02 15:30:16 #文章生成时间，一般不改，当然也可以任意修改"></a>date: 2013-12-02 15:30:16 #文章生成时间，一般不改，当然也可以任意修改</h4><h4 id="categories-默认分类-分类"><a href="#categories-默认分类-分类" class="headerlink" title="categories: 默认分类 #分类"></a>categories: 默认分类 #分类</h4><h4 id="tags-tag1-tag2-tag3-文章标签，可空，多标签请用格式，注意-后面有个空格"><a href="#tags-tag1-tag2-tag3-文章标签，可空，多标签请用格式，注意-后面有个空格" class="headerlink" title="tags: [tag1,tag2,tag3] #文章标签，可空，多标签请用格式，注意:后面有个空格"></a>tags: [tag1,tag2,tag3] #文章标签，可空，多标签请用格式，注意:后面有个空格</h4><h4 id="description-附加一段文章摘要，字数最好在140字以内，会出现在meta的description里面"><a href="#description-附加一段文章摘要，字数最好在140字以内，会出现在meta的description里面" class="headerlink" title="description: 附加一段文章摘要，字数最好在140字以内，会出现在meta的description里面"></a>description: 附加一段文章摘要，字数最好在140字以内，会出现在meta的description里面</h4><hr>
+<p>以下是正文<br>那么hexo new page ‘postName’命令和hexo new ‘postName’有什么区别呢？</p>
+<p>hexo new page “my-second-blog”<br>生成如下：</p>
+<p><img src="http://image.liuxianan.com/201608/20160823_184852_854_6502.png" alt></p>
+<p>最终部署时生成：hexo\public\my-second-blog\index.html，但是它不会作为文章出现在博文目录。</p>
+<h3 id="2-1-写博客工具"><a href="#2-1-写博客工具" class="headerlink" title="2.1. 写博客工具"></a>2.1. 写博客工具</h3><p>那么用什么工具写博客呢？这个我还没去找，以前自己使用editor.md简单弄了个，大家有好用的hexo写博客工具可以推荐个。</p>
+<h3 id="2-2-如何让博文列表不显示全部内容"><a href="#2-2-如何让博文列表不显示全部内容" class="headerlink" title="2.2. 如何让博文列表不显示全部内容"></a>2.2. 如何让博文列表不显示全部内容</h3><p>默认情况下，生成的博文目录会显示全部的文章内容，如何设置文章摘要的长度呢？</p>
+<p>答案是在合适的位置加上<a id="more"></a>即可，例如：</p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>使用github pages服务搭建博客的好处有：</p>
+<ol>
+<li>全是静态文件，访问速度快；</li>
+<li>免费方便，不用花一分钱就可以搭建一个自由的个人博客，不需要服务器不需要后台；</li>
+<li>可以随意绑定自己的域名，不仔细看的话根本看不出来你的网站是基于github的；</li>
+</ol>
+<!--more-->
+
+<ol start="4">
+<li>数据绝对安全，基于github的版本管理，想恢复到哪个历史版本都行；</li>
+<li>博客内容可以轻松打包、转移、发布到其它平台；</li>
+<li>等等；<br>最终效果：</li>
+</ol>
+<p>最终效果<br>可以访问我的git博客来查看效果： <a href="http://Ka571.github.io" target="_blank" rel="noopener">http://Ka571.github.io</a></p>
+
+
+                
+            </div>
+
+            <!-- Comments -->
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    
+
+
+                </div>
+            
+        </div>
+    </div>
+</article>
+
+    <!-- Footer -->
+    <hr />
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+
+                    
+                        <li>
+                            <a href="https://github.com/klugjo/hexo-theme-clean-blog" target="_blank">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    
+
+                    
+
+                    
+
+                    
+                </ul>
+                <p class="copyright text-muted">&copy; 2019 Mr feng<br></p>
+                <p class="copyright text-muted">Original Theme <a target="_blank" href="http://startbootstrap.com/template-overviews/clean-blog/">Clean Blog</a> from <a href="http://startbootstrap.com/" target="_blank">Start Bootstrap</a></p>
+                <p class="copyright text-muted">Adapted for <a target="_blank" href="https://hexo.io/">Hexo</a> by <a href="http://www.codeblocq.com/" target="_blank">Jonathan Klughertz</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- After footer scripts -->
+    
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Disqus Comments -->
+
+
+
+</body>
+
+</html>
